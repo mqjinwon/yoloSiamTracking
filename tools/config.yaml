@@ -1,0 +1,87 @@
+META_ARC: "siamrpn_YOLOv3_l234_dwxcorr_lt"
+
+BACKBONE:
+    TYPE: "darknet"
+    KWARGS:
+        cfgfile: "cfg/yolov3.cfg"
+        weightfile: "yolov3.weights"
+
+ADJUST:
+    ADJUST: true
+    TYPE: "AdjustLayer"
+    KWARGS:
+        in_channels: 128
+        out_channels: 256
+
+RPN:
+    TYPE: 'DepthwiseRPN'
+    KWARGS:
+        anchor_num: 5
+        in_channels: 256
+        out_channels: 256
+
+MASK:
+    MASK: False
+
+ANCHOR:
+    STRIDE: 8
+    RATIOS: [0.33, 0.5, 1, 2, 3]
+    SCALES: [8]
+    ANCHOR_NUM: 5
+
+TRACK:
+    TYPE: 'SiamRPNTracker'
+    PENALTY_K: 0.1 #0.01
+    WINDOW_INFLUENCE: 0.40
+    LR: 0.38
+    EXEMPLAR_SIZE: 127
+    INSTANCE_SIZE: 255
+    BASE_SIZE: 9
+    CONTEXT_AMOUNT: 0.5
+
+TRAIN:
+    EPOCH: 20
+    START_EPOCH: 5
+    BATCH_SIZE: 24
+    BASE_SIZE: 9
+    OUTPUT_SIZE: 26
+    BASE_LR: 0.005
+    CLS_WEIGHT: 1.0
+    LOC_WEIGHT: 1.2
+    RESUME: 'snapshot/checkpoint_e4.pth'
+
+    LR:
+        TYPE: 'log'
+        KWARGS:
+            start_lr: 0.005
+            end_lr: 0.0005
+    LR_WARMUP:
+        TYPE: 'step'
+        EPOCH: 5
+        KWARGS:
+            start_lr: 0.001
+            end_lr: 0.005
+            step: 1
+
+DATASET:
+    NAMES: 
+    - 'VID'
+    - 'DET'
+
+    TEMPLATE:
+        SHIFT: 4
+        SCALE: 0.05
+        BLUR: 0.0
+        FLIP: 0.0
+        COLOR: 1.0
+
+    SEARCH:
+        SHIFT: 64
+        SCALE: 0.18
+        BLUR: 0.2
+        FLIP: 0.0
+        COLOR: 1.0
+
+    NEG: 0.2
+    GRAY: 0.0
+

@@ -1,0 +1,123 @@
+num :  0 ,  convolutional  :     torch.Size([1, 32, 160, 160])
+num :  1 ,  convolutional  :     torch.Size([1, 64, 80, 80])
+
+num :  2 ,  convolutional  :     torch.Size([1, 32, 80, 80])
+num :  3 ,  convolutional  :     torch.Size([1, 64, 80, 80])
+num :  4 ,  shortcut  :          torch.Size([1, 64, 80, 80])	--num1 + num3
+
+num :  5 ,  convolutional  :     torch.Size([1, 128, 40, 40])
+
+num :  6 ,  convolutional  :     torch.Size([1, 64, 40, 40])
+num :  7 ,  convolutional  :     torch.Size([1, 128, 40, 40])
+num :  8 ,  shortcut  :          torch.Size([1, 128, 40, 40])	--num5 + num8 //이후 생략
+num :  9 ,  convolutional  :     torch.Size([1, 64, 40, 40])
+num :  10 ,  convolutional  :    torch.Size([1, 128, 40, 40])
+num :  11 ,  shortcut  :         torch.Size([1, 128, 40, 40])
+
+num :  12 ,  convolutional  :    torch.Size([1, 256, 20, 20])
+
+num :  13 ,  convolutional  :    torch.Size([1, 128, 20, 20])
+num :  14 ,  convolutional  :    torch.Size([1, 256, 20, 20])
+num :  15 ,  shortcut  :         torch.Size([1, 256, 20, 20])
+num :  16 ,  convolutional  :    torch.Size([1, 128, 20, 20])
+num :  17 ,  convolutional  :    torch.Size([1, 256, 20, 20])
+num :  18 ,  shortcut  :         torch.Size([1, 256, 20, 20])
+num :  19 ,  convolutional  :    torch.Size([1, 128, 20, 20])
+num :  20 ,  convolutional  :    torch.Size([1, 256, 20, 20])
+num :  21 ,  shortcut  :         torch.Size([1, 256, 20, 20])
+num :  22 ,  convolutional  :    torch.Size([1, 128, 20, 20])
+num :  23 ,  convolutional  :    torch.Size([1, 256, 20, 20])
+num :  24 ,  shortcut  :         torch.Size([1, 256, 20, 20])
+num :  25 ,  convolutional  :    torch.Size([1, 128, 20, 20])
+num :  26 ,  convolutional  :    torch.Size([1, 256, 20, 20])
+num :  27 ,  shortcut  :         torch.Size([1, 256, 20, 20])
+num :  28 ,  convolutional  :    torch.Size([1, 128, 20, 20])
+num :  29 ,  convolutional  :    torch.Size([1, 256, 20, 20])
+num :  30 ,  shortcut  :         torch.Size([1, 256, 20, 20])
+num :  31 ,  convolutional  :    torch.Size([1, 128, 20, 20])
+num :  32 ,  convolutional  :    torch.Size([1, 256, 20, 20])
+num :  33 ,  shortcut  :         torch.Size([1, 256, 20, 20])
+num :  34 ,  convolutional  :    torch.Size([1, 128, 20, 20])
+num :  35 ,  convolutional  :    torch.Size([1, 256, 20, 20])
+num :  36 ,  shortcut  :         torch.Size([1, 256, 20, 20])
+
+num :  37 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+
+num :  38 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  39 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  40 ,  shortcut  :         torch.Size([1, 512, 10, 10])
+num :  41 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  42 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  43 ,  shortcut  :         torch.Size([1, 512, 10, 10])
+num :  44 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  45 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  46 ,  shortcut  :         torch.Size([1, 512, 10, 10])
+num :  47 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  48 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  49 ,  shortcut  :         torch.Size([1, 512, 10, 10])
+num :  50 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  51 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  52 ,  shortcut  :         torch.Size([1, 512, 10, 10])
+num :  53 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  54 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  55 ,  shortcut  :         torch.Size([1, 512, 10, 10])
+num :  56 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  57 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  58 ,  shortcut  :         torch.Size([1, 512, 10, 10])
+num :  59 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  60 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  61 ,  shortcut  :         torch.Size([1, 512, 10, 10])
+
+num :  62 ,  convolutional  :    torch.Size([1, 1024, 5, 5])
+
+num :  63 ,  convolutional  :    torch.Size([1, 512, 5, 5])
+num :  64 ,  convolutional  :    torch.Size([1, 1024, 5, 5])
+num :  65 ,  shortcut  :         torch.Size([1, 1024, 5, 5])
+num :  66 ,  convolutional  :    torch.Size([1, 512, 5, 5])
+num :  67 ,  convolutional  :    torch.Size([1, 1024, 5, 5])
+num :  68 ,  shortcut  :         torch.Size([1, 1024, 5, 5])
+num :  69 ,  convolutional  :    torch.Size([1, 512, 5, 5])
+num :  70 ,  convolutional  :    torch.Size([1, 1024, 5, 5])
+num :  71 ,  shortcut  :         torch.Size([1, 1024, 5, 5])
+num :  72 ,  convolutional  :    torch.Size([1, 512, 5, 5])
+num :  73 ,  convolutional  :    torch.Size([1, 1024, 5, 5])
+num :  74 ,  shortcut  :         torch.Size([1, 1024, 5, 5])
+
+num :  75 ,  convolutional  :    torch.Size([1, 512, 5, 5])
+num :  76 ,  convolutional  :    torch.Size([1, 1024, 5, 5])
+num :  77 ,  convolutional  :    torch.Size([1, 512, 5, 5])
+num :  78 ,  convolutional  :    torch.Size([1, 1024, 5, 5])
+
+num :  79 ,  convolutional  :    torch.Size([1, 512, 5, 5])
+num :  80 ,  convolutional  :    torch.Size([1, 1024, 5, 5])
+num :  81 ,  convolutional  :    torch.Size([1, 255, 5, 5])
+num :  82 ,  yolo  :     	 torch.Size([1, 75, 85])	--output
+
+num :  83 ,  route  :    	 torch.Size([1, 512, 5, 5])	--num79
+num :  84 ,  convolutional  :    torch.Size([1, 256, 5, 5])
+num :  85 ,  upsample  :         torch.Size([1, 256, 10, 10])
+num :  86 ,  route  :    	 torch.Size([1, 768, 10, 10])	--cat(num61, num85)
+num :  87 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  88 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  89 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  90 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+
+num :  91 ,  convolutional  :    torch.Size([1, 256, 10, 10])
+num :  92 ,  convolutional  :    torch.Size([1, 512, 10, 10])
+num :  93 ,  convolutional  :    torch.Size([1, 255, 10, 10])
+num :  94 ,  yolo  :     	 torch.Size([1, 300, 85])	--output
+
+num :  95 ,  route  :    	 torch.Size([1, 256, 10, 10])	--num91
+num :  96 ,  convolutional  :    torch.Size([1, 128, 10, 10])
+num :  97 ,  upsample  :         torch.Size([1, 128, 20, 20])
+num :  98 ,  route  :    	 torch.Size([1, 384, 20, 20])	--cat(num36,num97)
+num :  99 ,  convolutional  :    torch.Size([1, 128, 20, 20])	--특징 추출용으로 사용!!
+num :  100 ,  convolutional  :   torch.Size([1, 256, 20, 20])
+num :  101 ,  convolutional  :   torch.Size([1, 128, 20, 20])
+num :  102 ,  convolutional  :   torch.Size([1, 256, 20, 20])
+
+num :  103 ,  convolutional  :   torch.Size([1, 128, 20, 20])	--이것도 사용해보기
+num :  104 ,  convolutional  :   torch.Size([1, 256, 20, 20])
+num :  105 ,  convolutional  :   torch.Size([1, 255, 20, 20])
+num :  106 ,  yolo  :    	 torch.Size([1, 1200, 85])	--output
+
