@@ -26,7 +26,7 @@ torch.set_num_threads(1)
 
 '''darknet 관련 인자'''
 parser = argparse.ArgumentParser(description='multi object detection using Siamese network')
-parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.95)
+parser.add_argument("--confidence", dest="confidence", help="Object Confidence to filter predictions", default=0.9)
 parser.add_argument("--nms_thresh", dest="nms_thresh", help="NMS Threshhold", default=0.4)
 parser.add_argument("--reso", dest='reso',
                     help="Input resolution of the network. Increase to increase accuracy. Decrease to increase speed",
@@ -40,13 +40,15 @@ parser.add_argument('--video_name', default='', type=str,
 parser.add_argument("--tracking_num", dest='tracking_num', type=int,
                     help="how many bounding box do you want to track", default=5)
 parser.add_argument("--l2_threshold", dest='l2_threshold', type=float,
-                    help="compare YOLOv3_bbox with siamese_bbox by L2 norm", default=100)
+                    help="compare YOLOv3_bbox with siamese_bbox by L2 norm", default=200)
 parser.add_argument("--coor_update", dest='coor_update', type=float,
                     help="update weight between YOLOv3_bbox and siamese_bbox", default=0.7)
 parser.add_argument("--score_threshold", dest='score_threshold', type=float,
                     help="siamese score threshold", default=0.97)
 parser.add_argument("--count_threshold", dest='count_threshold', type=int,
-                    help="undetected number threshold", default=10)
+                    help="undetected number threshold", default=5)
+parser.add_argument("--record", dest='record', type=bool,
+                    help="video record", default=False)
 
 args = parser.parse_args()
 
@@ -121,7 +123,6 @@ def get_frames(video_name):
             frame = cv2.imread(img)
             yield frame
 
-
 def main():
     # load config
     cfg.merge_from_file(args.config)
@@ -132,6 +133,7 @@ def main():
     weightsfile = "yolov3.weights"
     confidence = float(args.confidence)  # 물체를 탐지할때의 임계값
     nms_thesh = float(args.nms_thresh)  # 물체를 중복인식 하지 않도록 하는 nms 임계값
+    VIDEO = args.record  # 영상을 저장할지 말지 정하는 변수
 
     # STEP 2의 hyper parameter 결정하기
     L2_threshold = args.l2_threshold  # 박스들 사이의 거리를 비교함으로써 같은 박스인지 검출
@@ -140,6 +142,12 @@ def main():
     count_threshold = args.count_threshold  # 미검출을 얼마나 했는지 측정하는 threshold값
     tmplate_num = int(args.tracking_num)  # 몇 개의 물체를 추적할지 정하는 파라미터
 
+    # 영상 저장시 필요한 변수들
+    if VIDEO:
+        fourcc = cv2.VideoWriter_fourcc('D', 'I', 'V', 'X')
+        darkout = cv2.VideoWriter("C:/Users/vision/Desktop/pysot/dark1.avi", fourcc, 20.0, (1280, 960))
+        siamout = cv2.VideoWriter("C:/Users/vision/Desktop/pysot/siam1.avi", fourcc, 20.0, (1280, 960))
+
     CUDA = torch.cuda.is_available()
 
     num_classes = 80
@@ -147,8 +155,12 @@ def main():
     darknet = Darknet(cfgfile)
     darknet.load_weights(weightsfile)
 
-    darknet.net_info["height"] = 416  # 416 #192 #608 #args.reso
+    darknet.net_info["height"] = 416  # 32배수의 이미지이어야한다(YOLO를 위해) # 416 #192 #608 #args.reso
     inp_dim = int(darknet.net_info["height"])
+
+    # 이미지 사이즈 제한 걸기
+    assert inp_dim % 32 == 0
+    assert inp_dim > 32
 
     if CUDA:
         darknet.cuda()
@@ -203,29 +215,11 @@ def main():
 
         siamoutputs = tracker.darkTrack(siamimg)  # 'bbox': bbox, 'best_score': best_score
 
-        for siamoutput in siamoutputs:
-            bbox = siamoutput['bbox']
-            score = str(round(siamoutput['best_score'], 3))
-            cls = int(siamoutput['class'])
-            label = "{0}".format(classes[cls])
-            color = colors[cls]
-
-            cv2.putText(siamimg, label + score, (bbox[0], bbox[1]), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 255, 255))
-            cv2.rectangle(siamimg, (bbox[0], bbox[1]),
-                          (bbox[0] + bbox[2], bbox[1] + bbox[3]),
-                          color, 3)
-
-        cv2.imshow("darkimg", darkimg)
-        cv2.imshow(video_name, siamimg)
-
-        key = cv2.waitKey(1)
-        if key & 0xFF == ord('q'):
-            break
-
         '''STEP 2 : 알고리즘으로 bbox 갱신하기'''
         
         samebboxlist = []  # 같은 bbox의 id를 적는 리스트(나중에 threshold 비교용)
 
+        # 객체 검출 bbox와 객체 추적 bbox 비교 과정
         for darkoutput in darkoutputs:
             darkclass = darkoutput[-1].cpu().numpy()
             darkbbox = [darkoutput[1].cpu().numpy(), darkoutput[2].cpu().numpy(),
@@ -263,14 +257,16 @@ def main():
                     findFlag = True
                     break  # 찾았기 때문에 그냥 탈출한다.
 
-            if not findFlag:  # 새롭게 추가시켜준다.
-                if len(tracker.tracks) < tmplate_num:
+            # 새로운 템플릿 추가 과정
+            if not findFlag:  # 겹치지 않는 bbox는 새로운 템플릿으로 추가시켜준다.
+                if len(tracker.tracks) < tmplate_num:  # darknet 오류 예외처리(원인을 모르겠음...)
                     if darkbbox[0] == 0 and darkbbox[0] == 0:
                         pass
                     else:
                         print(darkbbox)
                         tracker.addlist(darkclass, frame, [darkbbox[0], darkbbox[1], darkbbox[2], darkbbox[3]])
 
+        # 템플릿을 삭제하는 과정
         for siamoutput in siamoutputs:
             if siamoutput['id'] in samebboxlist:  # L2 norm안에 들어오지 않는다면
                 pass
@@ -285,7 +281,34 @@ def main():
                         print("lost \"{0}\" object".format(classes[int(siamoutput['class'])]))
                         tracker.deletelist(siamoutput['id'])
 
+        # 이미지 띄우기
+        for siamoutput in siamoutputs:
+            bbox = list(map(lambda x: int(x), siamoutput['bbox']))
+            score = str(round(siamoutput['best_score'], 3))
+            cls = int(siamoutput['class'])
+            label = "{0}".format(classes[cls])
+            color = colors[cls]
+
+            cv2.putText(siamimg, label + score, (bbox[0], bbox[1]), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 255, 255))
+            cv2.rectangle(siamimg, (bbox[0], bbox[1]),
+                          (bbox[0] + bbox[2], bbox[1] + bbox[3]),
+                          color, 3)
+
+        cv2.imshow("darkimg", darkimg)
+        cv2.imshow(video_name, siamimg)
+        if VIDEO:
+            darkout.write(darkimg)
+            siamout.write(siamimg)
+
+        key = cv2.waitKey(1)
+        if key & 0xFF == ord('q'):
+            break
+
         print("FPS of the video is {:5.2f}".format(1 / (time.time() - start)))
+
+    if VIDEO:
+        darkout.release()
+        siamout.release()
 
         # # #첫 프레임!!! GT 초기화 작업을 여기서 진행한다.
         # first_frame = True
